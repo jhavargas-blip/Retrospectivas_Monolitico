@@ -1,3 +1,38 @@
+<?php
+require "../models/database/RetrospectiveDBInterface.php";
+require "../models/database/RetrospectiveDB.php";
+require "../models/entities/Sprint.php";
+require "../models/mappers/SprintMapper.php";
+require "../models/repositories/sprint_repository/SprintRepositoryInterface.php";
+require "../models/repositories/sprint_repository/SprintRepository.php";
+require "../models/config/ModelsConfig.php";
+
+require "../controllers/mappers/SprintMapperController.php";
+require "../controllers/sprints/SprintControllerInterface.php";
+require "../controllers/sprints/SprintController.php";
+require "../controllers/config/ControllersConfig.php";
+
+use app\controllers\config\ControllersConfig;
+
+$titulo = "Crear Sprint";
+$action = "operaciones/sprints/registrar_sprint.php";
+$id = 0;
+$nombre = "";
+$fecha_inicio = "";
+$fecha_fin = "";
+
+if (!empty($_GET['id'])) {
+    $titulo = "Modificar Sprint";
+    $action = "operaciones/sprints/modificar_sprint.php";
+    $id = $_GET['id'];
+    $controller = ControllersConfig::get_sprint_controller();
+    $sprint = $controller->get_sprint($id);
+    $nombre = $sprint->get_nombre();
+    $fecha_inicio = $sprint->get_fecha_inicio();
+    $fecha_fin = $sprint->get_fecha_fin();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 

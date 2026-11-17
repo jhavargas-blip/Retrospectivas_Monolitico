@@ -1,3 +1,71 @@
+<?php
+require "../models/database/RetrospectiveDBInterface.php";
+require "../models/database/RetrospectiveDB.php";
+require "../models/entities/Sprint.php";
+require "../models/entities/RetroItem.php";
+require "../models/mappers/SprintMapper.php";
+require "../models/mappers/RetroItemMapper.php";
+require "../models/repositories/sprint_repository/SprintRepositoryInterface.php";
+require "../models/repositories/sprint_repository/SprintRepository.php";
+require "../models/repositories/retro_item_repository/RetroItemRepositoryInterface.php";
+require "../models/repositories/retro_item_repository/RetroItemRepository.php";
+require "../models/config/ModelsConfig.php";
+
+require "../controllers/mappers/SprintMapperController.php";
+require "../controllers/mappers/RetroItemMapperController.php";
+require "../controllers/sprints/SprintControllerInterface.php";
+require "../controllers/sprints/SprintController.php";
+require "../controllers/retro_items/RetroItemControllerInterface.php";
+require "../controllers/retro_items/RetroItemController.php";
+require "../controllers/config/ControllersConfig.php";
+
+use app\controllers\config\ControllersConfig;
+
+$sprint_controller = ControllersConfig::get_sprint_controller();
+$item_controller = ControllersConfig::get_retro_item_controller();
+
+$categoria = $_GET['categoria'] ?? 'logro';
+$sprint_id = isset($_GET['sprint_id']) ? (int)$_GET['sprint_id'] : 0;
+
+$titulo = "Agregar Item";
+$action = "operaciones/retro_items/registrar_item.php";
+$id = 0;
+$descripcion = "";
+$cumplida = false;
+$fecha_revision = "";
+
+$labels = [
+    'logro' => 'Logro',
+    'impedimento' => 'Impedimento',
+    'accion' => 'Acción',
+    'comentario' => 'Comentario'
+];
+
+$icons = [
+    'logro' => 'trophy',
+    'impedimento' => 'exclamation-triangle',
+    'accion' => 'tasks',
+    'comentario' => 'sticky-note'
+];
+
+if (!empty($_GET['id'])) {
+    $titulo = "Modificar Item";
+    $action = "operaciones/retro_items/modificar_item.php";
+    $id = $_GET['id'];
+    $item = $item_controller->get_item($id);
+    $categoria = $item->get_categoria();
+    $sprint_id = $item->get_sprint_id();
+    $descripcion = $item->get_descripcion();
+    $cumplida = $item->get_cumplida() ?? false;
+    $fecha_revision = $item->get_fecha_revision() ?? '';
+}
+
+$sprint = null;
+if ($sprint_id) {
+    $sprint = $sprint_controller->get_sprint($sprint_id);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 

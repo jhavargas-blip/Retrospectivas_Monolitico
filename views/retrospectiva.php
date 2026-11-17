@@ -1,3 +1,56 @@
+<?php
+require "../models/database/RetrospectiveDBInterface.php";
+require "../models/database/RetrospectiveDB.php";
+require "../models/entities/Sprint.php";
+require "../models/entities/RetroItem.php";
+require "../models/mappers/SprintMapper.php";
+require "../models/mappers/RetroItemMapper.php";
+require "../models/repositories/sprint_repository/SprintRepositoryInterface.php";
+require "../models/repositories/sprint_repository/SprintRepository.php";
+require "../models/repositories/retro_item_repository/RetroItemRepositoryInterface.php";
+require "../models/repositories/retro_item_repository/RetroItemRepository.php";
+require "../models/config/ModelsConfig.php";
+
+require "../controllers/mappers/SprintMapperController.php";
+require "../controllers/mappers/RetroItemMapperController.php";
+require "../controllers/sprints/SprintControllerInterface.php";
+require "../controllers/sprints/SprintController.php";
+require "../controllers/retro_items/RetroItemControllerInterface.php";
+require "../controllers/retro_items/RetroItemController.php";
+require "../controllers/config/ControllersConfig.php";
+
+use app\controllers\config\ControllersConfig;
+
+$sprint_controller = ControllersConfig::get_sprint_controller();
+$item_controller = ControllersConfig::get_retro_item_controller();
+
+$sprints = $sprint_controller->get_sprints_all();
+
+$current_sprint_id = isset($_GET['sprint_id']) ? (int)$_GET['sprint_id'] : null;
+$items = [];
+$acciones_anteriores = [];
+
+if ($current_sprint_id) {
+    $items = $item_controller->get_items_by_sprint($current_sprint_id);
+    $acciones_anteriores = $item_controller->get_acciones_anteriores($current_sprint_id);
+}
+
+// Group items by category
+$items_by_category = [
+    'logro' => [],
+    'impedimento' => [],
+    'accion' => [],
+    'comentario' => [],
+];
+
+foreach ($items as $item) {
+    $cat = $item->get_categoria();
+    if (isset($items_by_category[$cat])) {
+        $items_by_category[$cat][] = $item;
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 

@@ -1,3 +1,61 @@
+<?php
+require "../models/database/RetrospectiveDBInterface.php";
+require "../models/database/RetrospectiveDB.php";
+require "../models/entities/Sprint.php";
+require "../models/entities/RetroItem.php";
+require "../models/mappers/SprintMapper.php";
+require "../models/mappers/RetroItemMapper.php";
+require "../models/repositories/sprint_repository/SprintRepositoryInterface.php";
+require "../models/repositories/sprint_repository/SprintRepository.php";
+require "../models/repositories/retro_item_repository/RetroItemRepositoryInterface.php";
+require "../models/repositories/retro_item_repository/RetroItemRepository.php";
+require "../models/config/ModelsConfig.php";
+
+require "../controllers/mappers/SprintMapperController.php";
+require "../controllers/mappers/RetroItemMapperController.php";
+require "../controllers/sprints/SprintControllerInterface.php";
+require "../controllers/sprints/SprintController.php";
+require "../controllers/retro_items/RetroItemControllerInterface.php";
+require "../controllers/retro_items/RetroItemController.php";
+require "../controllers/config/ControllersConfig.php";
+
+use app\controllers\config\ControllersConfig;
+
+$sprint_controller = ControllersConfig::get_sprint_controller();
+$item_controller = ControllersConfig::get_retro_item_controller();
+
+$sprints = $sprint_controller->get_sprints_all();
+
+$filter_sprint_id = isset($_GET['sprint_id']) ? (int)$_GET['sprint_id'] : null;
+
+$all_items = [];
+if ($filter_sprint_id) {
+    $items = $item_controller->get_items_by_sprint($filter_sprint_id);
+    foreach ($items as $item) {
+        $sprint = $sprint_controller->get_sprint($filter_sprint_id);
+        $item->set_sprint_nombre($sprint->get_nombre());
+        $item->set_sprint_fecha_inicio($sprint->get_fecha_inicio());
+        $item->set_sprint_fecha_fin($sprint->get_fecha_fin());
+    }
+    $all_items = [$filter_sprint_id => $items];
+} else {
+    foreach ($sprints as $sprint) {
+        $items = $item_controller->get_items_by_sprint($sprint->get_id());
+        foreach ($items as $item) {
+            $item->set_sprint_nombre($sprint->get_nombre());
+            $item->set_sprint_fecha_inicio($sprint->get_fecha_inicio());
+            $item->set_sprint_fecha_fin($sprint->get_fecha_fin());
+        }
+        if (!empty($items)) {
+            $all_items[$sprint->get_id()] = $items;
+        }
+    }
+}
+
+// Add sprint_fecha_inicio and sprint_fecha_fin to RetroItem entity if needed
+// We'll use a helper array instead
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
