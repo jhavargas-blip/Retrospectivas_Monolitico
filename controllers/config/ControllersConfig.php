@@ -2,6 +2,8 @@
 
 namespace app\controllers\config;
 
+use app\controllers\sprints\SprintController;
+use app\controllers\sprints\SprintControllerInterface;
 use app\controllers\retro_items\RetroItemController;
 use app\controllers\retro_items\RetroItemControllerInterface;
 use app\models\config\ModelsConfig;
