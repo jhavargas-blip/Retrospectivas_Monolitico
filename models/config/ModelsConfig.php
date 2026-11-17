@@ -4,8 +4,6 @@ namespace app\models\config;
 
 use app\models\database\RetrospectiveDB;
 use app\models\database\RetrospectiveDBInterface;
-use app\models\repositories\sprint_repository\SprintRepository;
-use app\models\repositories\sprint_repository\SprintRepositoryInterface;
 use app\models\repositories\retro_item_repository\RetroItemRepository;
 use app\models\repositories\retro_item_repository\RetroItemRepositoryInterface;
 
