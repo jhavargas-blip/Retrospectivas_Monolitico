@@ -1,3 +1,36 @@
+<?php
+use app\controllers\config\ControllersConfig;
+
+$id     = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$titulo = $id > 0 ? 'Modificar Sprint' : 'Nuevo Sprint';
+$action = $id > 0
+    ? 'operaciones/sprints/modificar_sprint.php'
+    : 'operaciones/sprints/registrar_sprint.php';
+
+$nombre = $fecha_inicio = $fecha_fin = '';
+
+if ($id > 0) {
+    require __DIR__ . '/../models/database/RetrospectiveDBInterface.php';
+    require __DIR__ . '/../models/database/RetrospectiveDB.php';
+    require __DIR__ . '/../models/entities/Sprint.php';
+    require __DIR__ . '/../models/mappers/SprintMapper.php';
+    require __DIR__ . '/../models/repositories/sprint_repository/SprintRepositoryInterface.php';
+    require __DIR__ . '/../models/repositories/sprint_repository/SprintRepository.php';
+    require __DIR__ . '/../models/config/ModelsConfig.php';
+    require __DIR__ . '/../controllers/mappers/SprintMapperController.php';
+    require __DIR__ . '/../controllers/sprints/SprintControllerInterface.php';
+    require __DIR__ . '/../controllers/sprints/SprintController.php';
+    require __DIR__ . '/../controllers/config/ControllersConfig.php';
+
+    $sprint = ControllersConfig::get_sprint_controller()->get_sprint($id);
+    if ($sprint) {
+        $nombre       = $sprint->get_nombre();
+        $fecha_inicio = $sprint->get_fecha_inicio();
+        $fecha_fin    = $sprint->get_fecha_fin();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -5,7 +38,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $titulo; ?></title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../public/css/styles.css">
 </head>
 
 <body>
