@@ -117,21 +117,6 @@ $sprints = $controller->get_sprints_all();
             </div>
         </main>
     </div>
-
-    <script>
-        (function () {
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('success') || params.has('deleted') || params.has('error')) {
-                window.history.replaceState({}, '', window.location.pathname);
-            }
-
-            setTimeout(function () {
-                document.querySelectorAll('.toast').forEach(function (toast) {
-                    toast.remove();
-                });
-            }, 4000);
-        })();
-    </script>
 </body>
 
 </html>
